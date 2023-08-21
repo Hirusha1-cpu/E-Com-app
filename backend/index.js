@@ -22,15 +22,17 @@ const userSchema = mongoose.Schema({
     lastName: String,
     email: {
         type: String,
-        unigue: true
+        unique: true
     },
     password: String,
     confirmPassword: String,
-    image: String
+    image: String,
+    address: String,
+
 })
 
 //
-const userModel = mongoose.model("userrestuarant", userSchema)
+const userModel = mongoose.model("userrestuarant1", userSchema)
 
 
 app.get("/", (req, res) => {
@@ -67,17 +69,20 @@ app.post("/login", async (req, res) => {
             firstName: doc.firstName,
             lastName: doc.lastName,
             email: doc.email,
-
+            address: doc.address,
             image: doc.image,
         }
         console.log(dataSend);
-        res.send({ message: "Login Successfull", alert: true, data: dataSend })
+        res.send({ message: "Login Successfull",
+         alert: true, data: dataSend })
     } else {
 
         res.send({ message: "Sign up have and error", alert: false })
     }
 
 })
+
+
 
 //product section
 const schemaProduct = mongoose.Schema({
@@ -88,7 +93,7 @@ const schemaProduct = mongoose.Schema({
     description: String
 })
 
-const productModal = mongoose.model("productsrestaurant", schemaProduct)
+const productModal = mongoose.model("productsrestaurant1", schemaProduct)
 
 //upload product in data
 //api
@@ -102,6 +107,29 @@ app.post("/uploadproduct",async(req, res)=>{
 
 app.get("/product",async(req,res)=>{
     const data = await productModal.find({})
+    res.send(JSON.stringify(data));
+})
+
+
+//cart section
+const cartProduct = mongoose.Schema({
+    name:String,
+    category:String,
+    qty:Number,
+    user:String
+})
+const cartModal = mongoose.model("cartrestaurant1", cartProduct)
+
+//api
+app.post("/cart", async(req, res)=>{
+    console.log(req.body);
+    const data = await cartModal(req.body)
+    const datasave = await data.save()
+    res.send({message: "Upload cart Success"})
+
+})
+app.get("/cart",async(req,res)=>{
+    const data = await cartModal.find({})
     res.send(JSON.stringify(data));
 })
 
